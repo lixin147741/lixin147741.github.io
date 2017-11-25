@@ -93,11 +93,53 @@
     <div class="article-content">
         
         <p>最近看了本书《Clean Code》，在结合之前看的《The art of readable code》聊一聊对Clean Code的看法。</p>
+<h3 id="我的经历"><a href="#我的经历" class="headerlink" title="我的经历"></a>我的经历</h3><p>开始写代码的时候根本没有Clean Code的概念，把所有的变量和所有的方法堆在一起，代码无比丑陋。</p>
+<p>后来慢慢的开始注重写“好看”的代码，学到很多关于代码的奇淫技巧。</p>
+<p>后来系统的学习了Clean Code，在加上日常也在实践可以说对Clean Code有一些心得了。</p>
+<h3 id="Clean-Code规范"><a href="#Clean-Code规范" class="headerlink" title="Clean Code规范"></a>Clean Code规范</h3><blockquote>
+<p>这里引用书中的话，简单的总结一下Clean Code的规范</p>
+</blockquote>
+<h5 id="关于函数"><a href="#关于函数" class="headerlink" title="关于函数"></a>关于函数</h5><ul>
+<li>确保函数只做一件事，函数中的语句都要在同一个抽象级上</li>
+<li>如果一个函数用到了3个或者三个以上的参数，那么就要考虑把参数封装成类（struct）了</li>
+<li>函数不应该有副作用（反过来如果函数有了副作用，那么他肯定不只做了一件事）</li>
+<li>不要写重复的代码</li>
+</ul>
+<h5 id="关于注释"><a href="#关于注释" class="headerlink" title="关于注释"></a>关于注释</h5><ul>
+<li>很有意思的观点： 注释的恰当用法是弥补我们用代码表达意图时遭遇的失败</li>
+<li>这里的注释和SDK中的注释不一样：SDK中的注释是帮助使用者快速了解API接口的定义，而不需要他去读源码来了解</li>
+<li>遇到乱七八糟的代码时，要做的不是添加注释而是把代码弄干净</li>
+</ul>
+<h5 id="关于注释-1"><a href="#关于注释-1" class="headerlink" title="关于注释"></a>关于注释</h5><ul>
+<li>很有意思的观点： 注释的恰当用法是弥补我们用代码表达意图时遭遇的失败</li>
+<li>这里的注释和SDK中的注释不一样：SDK中的注释是帮助使用者快速了解API接口的定义，而不需要他去读源码来了解</li>
+<li>遇到乱七八糟的代码时，要做的不是添加注释而是把代码弄干净</li>
+</ul>
+<h5 id="关于对象和数据结构"><a href="#关于对象和数据结构" class="headerlink" title="关于对象和数据结构"></a>关于对象和数据结构</h5><ul>
+<li>面向过程的代码难以添加新的数据结构，因为必须修改所有的函数</li>
+<li>面向对象的代码难以添加新的函数，因为必须修改所有的类</li>
+</ul>
+<h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><ul>
+<li>让变量名有更多的涵义</li>
+<li>不要取有误解的名字</li>
+<li>审美很重要，保持代码的一致性</li>
+<li>写有用的注释</li>
+<li>简化循环和逻辑</li>
+<li>一次只做一件事</li>
+<li>避免过度设计，尽量少写代码</li>
+<li>消除重复</li>
+<li>保证表达力</li>
+<li>尽可能减少类和方法的数量</li>
+</ul>
+<blockquote>
+<p>以上我只挑了个人认为比较重要的记录下来。</p>
+</blockquote>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>对于每个语言大致都应该有了一Lint工具来帮助你进行简单的Clean Code。比如Swift中有SwiftLint，Objective-C中有OCLint。日常的开发中可以通过这些工具来进行Clean Code。</p>
+<p>毋庸置疑，Clean Code不论是在代码可读性还是在代码可维护性上都是无比重要的。</p>
+
         
         
         <p class="article-more-link">
-          
-            <a href="/2017/11/25/聊一聊Clean-Code/#more">Read More</a>
           
        </p>
     </div>
