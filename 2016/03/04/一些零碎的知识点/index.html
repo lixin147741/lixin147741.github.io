@@ -1,0 +1,516 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>一些零碎的知识点 | Kee&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Kee">
+    
+
+    
+    <meta name="description" content="自动布局相关的一些知识点，对今天看到的文章的小总结layoutSubviews()layoutSubviews()会在以下情况下调用  init初始化不会触发layoutSubviews。 addSubview会触发layoutSubviews。 设置view的Frame会触发layoutSubviews，当然前提是f">
+<meta name="keywords" content="Autolayouts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一些零碎的知识点">
+<meta property="og:url" content="http://yoursite.com/2016/03/04/一些零碎的知识点/index.html">
+<meta property="og:site_name" content="Kee&#39;s Blog">
+<meta property="og:description" content="自动布局相关的一些知识点，对今天看到的文章的小总结layoutSubviews()layoutSubviews()会在以下情况下调用  init初始化不会触发layoutSubviews。 addSubview会触发layoutSubviews。 设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。 滚动一个UIScrollView会触发layo">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-11-25T07:14:59.729Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一些零碎的知识点">
+<meta name="twitter:description" content="自动布局相关的一些知识点，对今天看到的文章的小总结layoutSubviews()layoutSubviews()会在以下情况下调用  init初始化不会触发layoutSubviews。 addSubview会触发layoutSubviews。 设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。 滚动一个UIScrollView会触发layo">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Kee&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="Kee&#39;s Blog" title="Kee&#39;s Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Kee&#39;s Blog">Kee&#39;s Blog</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/03/04/一些零碎的知识点/" title="一些零碎的知识点" itemprop="url">一些零碎的知识点</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Kee" target="_blank" itemprop="author">Kee</a>
+		
+  <p class="article-time">
+    <time datetime="2016-03-04T08:54:58.000Z" itemprop="datePublished"> 发表于 2016-03-04</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#自动布局相关的一些知识点，对今天看到的文章的小总结"><span class="toc-number">1.</span> <span class="toc-text">自动布局相关的一些知识点，对今天看到的文章的小总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#layoutSubviews"><span class="toc-number">1.0.1.</span> <span class="toc-text">layoutSubviews()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#setNeedsLayout-跟-layoutIfNeeded"><span class="toc-number">1.0.2.</span> <span class="toc-text">setNeedsLayout() 跟 layoutIfNeeded()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关于创建Autolayout的地方"><span class="toc-number">1.0.3.</span> <span class="toc-text">关于创建Autolayout的地方</span></a></li></ol></li></ol></li></ol>
+		
+		</div>
+		
+		<h1 id="自动布局相关的一些知识点，对今天看到的文章的小总结"><a href="#自动布局相关的一些知识点，对今天看到的文章的小总结" class="headerlink" title="自动布局相关的一些知识点，对今天看到的文章的小总结"></a>自动布局相关的一些知识点，对今天看到的文章的小总结</h1><h3 id="layoutSubviews"><a href="#layoutSubviews" class="headerlink" title="layoutSubviews()"></a>layoutSubviews()</h3><p>layoutSubviews()会在以下情况下调用</p>
+<ul>
+<li>init初始化不会触发layoutSubviews。</li>
+<li>addSubview会触发layoutSubviews。</li>
+<li>设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化。</li>
+<li>滚动一个UIScrollView会触发layoutSubviews。</li>
+<li>旋转Screen会触发父UIView上的layoutSubviews事件。</li>
+<li>改变一个UIView大小的时候也会触发父UIView上的layoutSubviews事件。</li>
+<li>直接调用setLayoutSubviews。</li>
+</ul>
+<a id="more"></a>
+<h3 id="setNeedsLayout-跟-layoutIfNeeded"><a href="#setNeedsLayout-跟-layoutIfNeeded" class="headerlink" title="setNeedsLayout() 跟 layoutIfNeeded()"></a>setNeedsLayout() 跟 layoutIfNeeded()</h3><p>setNeedsLayout()方法： 标记为需要重新布局，异步调用layoutIfNeeded()刷新布局，不立即刷新，但layoutSubviews()一定会被调用 layoutIfNeeded()方法：如果，有需要刷新的标记，立即调用layoutSubviews()进行布局（如果没有标记，不会调用layoutSubviews()）</p>
+<p>如果要立即刷新，要先调用view.setNeedsLayout()，把标记设为需要布局，然后马上调用view.layoutIfNeeded()，实现布局</p>
+<p>在视图第一次显示之前，标记总是“需要刷新”的，可以直接调用view.layoutIfNeeded()</p>
+<h3 id="关于创建Autolayout的地方"><a href="#关于创建Autolayout的地方" class="headerlink" title="关于创建Autolayout的地方"></a>关于创建Autolayout的地方</h3><ul>
+<li>View中<br>直接在init方法里创建.</li>
+<li>ViewController中<br>直接在viewDidLoad()里创建.</li>
+</ul>
+<p>如果用IB创建约束,在viewDidLoad里不能获取到某个view的正确frame,怎么办?<br>这个时候你需要在一个叫viewDidLayoutSubviews()里的方法里获取一个view的正确frame.</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Autolayouts/">Autolayouts</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2016/03/04/一些零碎的知识点/" data-title="一些零碎的知识点 | Kee&#39;s Blog" data-tsina="3196997671" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/03/12/GCD总结/" title="GCD总结">
+  <strong>上一篇：</strong><br/>
+  <span>
+  GCD总结</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#自动布局相关的一些知识点，对今天看到的文章的小总结"><span class="toc-number">1.</span> <span class="toc-text">自动布局相关的一些知识点，对今天看到的文章的小总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#layoutSubviews"><span class="toc-number">1.0.1.</span> <span class="toc-text">layoutSubviews()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#setNeedsLayout-跟-layoutIfNeeded"><span class="toc-number">1.0.2.</span> <span class="toc-text">setNeedsLayout() 跟 layoutIfNeeded()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关于创建Autolayout的地方"><span class="toc-number">1.0.3.</span> <span class="toc-text">关于创建Autolayout的地方</span></a></li></ol></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Autolayouts/" title="Autolayouts">Autolayouts<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Clean-Code/" title="Clean Code">Clean Code<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://lixin147741.github.io" target="_blank" title="Kee&#39;s Blog">Kee&#39;s Blog</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://ios.dog" target="_blank" title="Boolean93">Boolean93</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://blog.callmewhy.com" target="_blank" title="Why&#39;s Blog">Why&#39;s Blog</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://c2pblog.sinaapp.com" target="_blank" title="凯宁写字的地方">凯宁写字的地方</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=3196997671&verifier=4ec590f7&dpc=1"></iframe>
+</div>
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello,I&#39;m Kee <br/>
+			</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/3196997671" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/lixin147741" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="http://www.zhihu.com/people/li-xin-6-10" target="_blank" class="icon-zhihu" title="知乎"></a>
+		
+		
+		
+		<a href="mailto:605885892@qq.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="/about" target="_blank" title="Kee">Kee</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'lixin';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
